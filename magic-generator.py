@@ -92,7 +92,7 @@ def generate_magic_number(message: str) -> int:
     config_number = sequence_join_on_8(sequence)
 
     magic_number = sequence_join_on_8([message_number, config_number])
-    print(f"x: {x}, y: {y}, q: {q}, r: {r}, symbol_lookup: {symbol_lookup}, message_number: {message_number}")
+    #print(f"x: {x}, y: {y}, q: {q}, r: {r}, symbol_lookup: {symbol_lookup}, message_number: {message_number}")
     return magic_number
 
 def decode_magic_number(number:int):
@@ -116,9 +116,26 @@ def decode_magic_number(number:int):
 
     return decoded_string
 
+def decode_magic_number_min(number):
+    message_number, config_number = extract_sequence_on_8(number)
+    symbol_lookup_number, x, y, q, r = extract_sequence_on_8(config_number)
+    symbol_lookup_sequence = extract_sequence_on_8(symbol_lookup_number)
+    symbol_lookup = {i:chr(char) for i, char in zip(symbol_lookup_sequence[0::2], symbol_lookup_sequence[1::2])}
+
+    teardown = (lambda s:lambda t, n:s(s,t,n))(lambda s, t, n: t if n == 0 else s(s, t // q, n-1))
+    
+    decoded_string = ""
+    for row in range(y):
+        message_number //= r
+        line = "".join([symbol_lookup[int(teardown(message_number, column + 1) % q)] for column in range(x)][::-1])
+        message_number = teardown(message_number, x)
+        decoded_string = line + "\n" + decoded_string
+    return decoded_string[:-1]
+
 
 if __name__ == "__main__":
     message = """this is a test message
-Which I will decoDE! HAHAH YEAH"""
+Which I will decoDE! HAHAH YEAH
+Another line for good measure"""
     magic_number = generate_magic_number(message)
-    print(decode_magic_number(magic_number))
+    print(decode_magic_number_min(magic_number))
