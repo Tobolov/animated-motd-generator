@@ -116,7 +116,7 @@ def decode_magic_number(number:int):
 
     return decoded_string
 
-decode_magic_number_min = lambda z:(lambda s:lambda n:(a:=s['e'](n),s.update({'g':a[0]}),b:=s['e'](a[1]),u:=s['e'](b[0]),f:={i:chr(c) for i,c in zip(u[0::2],u[1::2])},[s.update({'g':s['g']//b[4]}) or s.update({'d':"".join([f[(s.update({'g':s['g']//b[3]}) or s.get('g'))%b[3]] for p in range(b[1])][::-1])+f"\n{s['d']}"}) for w in range(b[2])][0:0] or s['d'][:-1],s['d']))({'d':"",'e':lambda a:[int(int(i,8)) for i in str(a).split("8")[1:]]})(z)[-1]
+decode_magic_number_min = lambda z: (lambda s: lambda n: (a:= s['e'](n),s.update({'g':a[0]}),b := s['e'](a[1]),u := s['e'](b[0]),f := {i:chr(c) for i, c in zip(u[0::2], u[1::2])},[s.update({'g':s['g'] // b[4]}) or s.update({'d': "".join([f[(s.update({'g':s['g'] // b[3]}) or s.get('g')) % b[3]] for p in range(b[1])][::-1]) + f"\n{s['d']}"}) for w in range(b[2])][0:0] or s['d'][:-1],s['d']))({'d': "", 'e': lambda a: [int(int(i, 8)) for i in str(a).split("8")[1:]]})(z)[-1]
 
 
 if __name__ == "__main__":
