@@ -120,6 +120,7 @@ def decode_magic_number(number:int):
 
 # pylint: disable=all
 decode_magic_number_min = lambda z: (lambda s: lambda n: (a:= s['e'](n),s.update({'g':a[0]}),b := s['e'](a[1]),u := s['e'](b[0]),f := {i:chr(c) for i, c in zip(u[0::2], u[1::2])},[s.update({'g':s['g'] // b[4]}) or s.update({'d': "".join([f[(s.update({'g':s['g'] // b[3]}) or s.get('g')) % b[3]] for p in range(b[1])][::-1]) + f"\n{s['d']}"}) for w in range(b[2])][0:0] or s['d'][:-1],s['d']))({'d': "", 'e': lambda a: [int(int(i, 8)) for i in str(a).split("8")[1:]]})(z)[-1]
+decode_magic_number_min_string = r"""lambda z: (lambda s: lambda n: (a:= s['e'](n),s.update({'g':a[0]}),b := s['e'](a[1]),u := s['e'](b[0]),f := {i:chr(c) for i, c in zip(u[0::2], u[1::2])},[s.update({'g':s['g'] // b[4]}) or s.update({'d': "".join([f[(s.update({'g':s['g'] // b[3]}) or s.get('g')) % b[3]] for p in range(b[1])][::-1]) + f"\n{s['d']}"}) for w in range(b[2])][0:0] or s['d'][:-1],s['d']))({'d': "", 'e': lambda a: [int(int(i, 8)) for i in str(a).split("8")[1:]]})(z)[-1]"""
 
 def animate_string_explosion(message: str) -> None:
     # constants
@@ -218,38 +219,18 @@ def animate_string_explosion(message: str) -> None:
 
 
 
-animate_string_explosion_min = lambda a, b, c, d, e, f, g, h, i: (
-    lambda j: (
-        k := a.splitlines(),
-        l := len(k),
-        m := max([len(n) for n in k]),
-        o := [[[' ', None, None] for y in range(l)] for x in range(m)],
-        o[random.randrange(m // 2 - m // 4, m // 2 + m // 4)].__setitem__(random.randrange(l // 2 - l // 4, l // 2 + l // 4), j['r']()),
-        (lambda p: p(p))(
-            lambda p: None if j['q'] else (
-                v := time.time(),
-                w := (v - j['u']) * b,
-                j.__setitem__('u', v),
-                [[(z := o[x][y], z.__setitem__(1, z[1] - w) if z[1] is not None else None, z.__setitem__(2, z[2] - w) if z[2] is not None else None) for x in range(m)] for y in range(l)],
-                j.__setitem__('q', True),
-                [[(z := o[x][y], z.__setitem__(0, k[y][x]) if (z[1] is not None and z[1] < 0) else None, j.__setitem__('q', False) if (z[1] is not None and z[1] >= 0) else None, (random.shuffle(j['s']), [(ab := j['t'](x + ac[0], 0, m - 1), ad := j['t'](y + ac[1], 0, l - 1), ae := o[ab][ad], o[ab].__setitem__(ad, j['r']()) if (ae[1] is None and random.uniform(0, 1) < (i if ac[1] != 0 else h)) else None) for ac in j['s']]) if (z[1] is not None and z[2] < 0) else None, j.__setitem__('q', False) if z[1] is None else None, o[x].__setitem__(y, z)) for x in range(m)] for y in range(l)],
-                aa := "".join(["".join([o[x][y][0] for x in range(m)]) + '\n' for y in range(l)]),
-                print("%s\033[%sA" % (aa, l), end=''),
-                p(p)
-            )
-        ),
-        print(f"\033[{l}B")
-    )
-    )({
-        'r': lambda: [random.choice(c), random.uniform(d, e), random.uniform(f, g)],
-        's' : [[0, 1], [0, -1], [1, 0], [-1, 0]],
-        't' : lambda n, x, y: max(x, min(n, y)),
-        'q': False,
-        'u': time.time()
-    })
+animate_string_explosion_min = lambda a, b, c, d, e, f, g, h, i: (lambda j: (k := a.splitlines(),l := len(k),m := max([len(n) for n in k]),o := [[[' ', None, None] for y in range(l)] for x in range(m)],o[__import__("random").randrange(m // 2 - m // 4, m // 2 + m // 4)].__setitem__(__import__("random").randrange(l // 2 - l // 4, l // 2 + l // 4), j['r']()),(lambda p: p(p))(lambda p: None if j['q'] else (v := __import__("time").time(),w := (v - j['u']) * b,j.__setitem__('u', v),[[(z := o[x][y], z.__setitem__(1, z[1] - w) if z[1] is not None else None, z.__setitem__(2, z[2] - w) if z[2] is not None else None) for x in range(m)] for y in range(l)],j.__setitem__('q', True),[[(z := o[x][y], z.__setitem__(0, k[y][x]) if (z[1] is not None and z[1] < 0) else None, j.__setitem__('q', False) if (z[1] is not None and z[1] >= 0) else None, (__import__("random").shuffle(j['s']), [(ab := j['t'](x + ac[0], 0, m - 1), ad := j['t'](y + ac[1], 0, l - 1), ae := o[ab][ad], o[ab].__setitem__(ad, j['r']()) if (ae[1] is None and __import__("random").uniform(0, 1) < (i if ac[1] != 0 else h)) else None) for ac in j['s']]) if (z[1] is not None and z[2] < 0) else None, j.__setitem__('q', False) if z[1] is None else None, o[x].__setitem__(y, z)) for x in range(m)] for y in range(l)],aa := "".join(["".join([o[x][y][0] for x in range(m)]) + '\n' for y in range(l)]),print("%s\033[%sA" % (aa, l), end=''),p(p))),print(f"\033[{l}B")))({'r': lambda: [__import__("random").choice(c), __import__("random").uniform(d, e), __import__("random").uniform(f, g)],'s' : [[0, 1], [0, -1], [1, 0], [-1, 0]],'t' : lambda n, x, y: max(x, min(n, y)),'q': False,'u': __import__("time").time()})
+animate_string_explosion_min_string = r"""lambda a, b, c, d, e, f, g, h, i: (lambda j: (k := a.splitlines(),l := len(k),m := max([len(n) for n in k]),o := [[[' ', None, None] for y in range(l)] for x in range(m)],o[__import__("random").randrange(m // 2 - m // 4, m // 2 + m // 4)].__setitem__(__import__("random").randrange(l // 2 - l // 4, l // 2 + l // 4), j['r']()),(lambda p: p(p))(lambda p: None if j['q'] else (v := __import__("time").time(),w := (v - j['u']) * b,j.__setitem__('u', v),[[(z := o[x][y], z.__setitem__(1, z[1] - w) if z[1] is not None else None, z.__setitem__(2, z[2] - w) if z[2] is not None else None) for x in range(m)] for y in range(l)],j.__setitem__('q', True),[[(z := o[x][y], z.__setitem__(0, k[y][x]) if (z[1] is not None and z[1] < 0) else None, j.__setitem__('q', False) if (z[1] is not None and z[1] >= 0) else None, (__import__("random").shuffle(j['s']), [(ab := j['t'](x + ac[0], 0, m - 1), ad := j['t'](y + ac[1], 0, l - 1), ae := o[ab][ad], o[ab].__setitem__(ad, j['r']()) if (ae[1] is None and __import__("random").uniform(0, 1) < (i if ac[1] != 0 else h)) else None) for ac in j['s']]) if (z[1] is not None and z[2] < 0) else None, j.__setitem__('q', False) if z[1] is None else None, o[x].__setitem__(y, z)) for x in range(m)] for y in range(l)],aa := "".join(["".join([o[x][y][0] for x in range(m)]) + '\n' for y in range(l)]),print("%s\033[%sA" % (aa, l), end=''),p(p))),print(f"\033[{l}B")))({'r': lambda: [__import__("random").choice(c), __import__("random").uniform(d, e), __import__("random").uniform(f, g)],'s' : [[0, 1], [0, -1], [1, 0], [-1, 0]],'t' : lambda n, x, y: max(x, min(n, y)),'q': False,'u': __import__("time").time()})"""
 
 def animate_string_explosion_min_wrapper(message, time_scale=100, debis="*#", life_till_set_min=2, life_till_set_max=15, life_till_spread_min=0.2, life_till_spread_max=1, spread_chance_x=0.9, spread_chance_y=0.01):
     animate_string_explosion_min(message, time_scale, debis, life_till_set_min, life_till_set_max, life_till_spread_min, life_till_spread_max, spread_chance_x, spread_chance_y)
+
+def generate_single_line_string_explosion(message: str) -> str:
+    arguments = "{extracted_magic_number}, 100, '*#', 2, 15, 0.2, 1, 0.9, 0.01".format(
+        extracted_magic_number=f"({decode_magic_number_min_string})({generate_magic_number(message)})"
+        )
+    code = f"({animate_string_explosion_min_string})({arguments})"
+    return code
 
 if __name__ == "__main__":
     message = r"""_____/\\\\\\\\\\_______/\\\____________/\\\\____________/\\\\_____/\\\\\\\\\_____/\\\________/\\\_        
@@ -262,5 +243,4 @@ if __name__ == "__main__":
        _\///\\\\\\\\\/_______\/\\\___________\/\\\_____________\/\\\_\/\\\_______\/\\\_______\/\\\_______ 
         ___\/////////_________\///____________\///______________\///__\///________\///________\///________
 """
-    magic_number = generate_magic_number(message)
-    animate_string_explosion_min_wrapper(decode_magic_number(magic_number))
+    print(generate_single_line_string_explosion(message))
