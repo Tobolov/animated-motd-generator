@@ -117,13 +117,19 @@ def decode_magic_number(number:int):
     return decoded_string
 
 def decode_magic_number_min(number):
-    s = {'d': ""}
-    s['mn'], s['cn'] = extract_sequence_on_8(number)
-    s['sln'], s['x'], s['y'], s['q'], s['r'] = extract_sequence_on_8(s['cn'])
-    s['sls'] = extract_sequence_on_8(s['sln'])
-    s['sl'] = {i:chr(char) for i, char in zip(s['sls'][0::2], s['sls'][1::2])}
+    f = (lambda s: lambda n: (
+        a := s['e'](n), # a = mn, cn
+        s.update({'mn':a[0]}),
+        b := s['e'](a[1]), # b = sln, x, y, q, r
+        sls := s['e'](b[0]), # sls = sls
+        sl := {i:chr(c) for i, c in zip(sls[0::2], sls[1::2])},
+        [s.update({'mn':s['mn'] // b[4]}) or s.update({'d': "".join([sl[(s.update({'mn':s['mn'] // b[3]}) or s.get('mn')) % b[3]] for column in range(b[1])][::-1]) + f"\n{s['d']}"}) for row in range(b[2])][0:0] or s['d'][:-1],
+        s['d']
+        ))(
+            {'d': "", 'e': lambda a: [int(int(i, 8)) for i in str(a).split("8")[1:]]}
+            )
 
-    return [s.update({'mn':s['mn'] // s['r']}) or s.update({'d': "".join([s['sl'][(s.update({'mn':s['mn'] // s['q']}) or s.get('mn')) % s['q']] for column in range(s['x'])][::-1]) + f"\n{s['d']}"}) for row in range(s['y'])][0:0] or s['d'][:-1]
+    return f(number)[-1]
 
 
 if __name__ == "__main__":
