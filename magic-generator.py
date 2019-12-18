@@ -228,96 +228,58 @@ def animate_string_explosion_min(message):
     spread_chance_x = 0.9
     spread_chance_y = 0.01
 
-    random_infected_pixel = lambda: {'char': random.choice(debis), 'life_till_set': random.uniform(life_till_set_min, life_till_set_max), 'life_till_spread': random.uniform(life_till_spread_min, life_till_spread_max)}
+    random_infected_pixel = lambda: [random.choice(debis), random.uniform(life_till_set_min, life_till_set_max), random.uniform(life_till_spread_min, life_till_spread_max)]
     neighbour_displacements = [[0, 1], [0, -1], [1, 0], [-1, 0]]
     clamp = lambda n, smallest, largest: max(smallest, min(n, largest))
 
+    message_lines = message.splitlines()
+    message_y = len(message_lines)
+    message_x = max([len(line) for line in message_lines])
+    state = [[[' ', None, None] for y in range(message_y)] for x in range(message_x)]
+    state[random.randrange(message_x // 2 - message_x // 4, message_x // 2 + message_x // 4)][random.randrange(message_y // 2 - message_y // 4, message_y // 2 + message_y // 4)] = random_infected_pixel()
 
-    # calculate max line length of message and line height
-    message_lines: list(str) = message.splitlines()
-    message_y: int = len(message_lines)
-    message_x: int = max([len(line) for line in message_lines])
 
-    # generate state map
-    state = [[{'char': ' ', 'life_till_set': None, 'life_till_spread': None} for y in range(message_y)] for x in range(message_x)]
-    
-    # start explosion
-    medium_x = message_x // 2
-    medium_y = message_y // 2
-    state[random.randrange(medium_x - medium_x // 2, medium_x + medium_x // 2)][random.randrange(medium_y - medium_y // 2, medium_y + medium_y // 2)] = random_infected_pixel()
-
-    # enable fancy escape sequences
-    __import__("os").system("")
-
-    # animation loop
     last_time = time.time()
-    while True:
+    all_pixels_set = False
+    while not all_pixels_set:
         # calculate delta time
         current_time = time.time()
         delta_time = (current_time - last_time) * time_scale
         last_time = current_time
 
         # update life values
-        for y in range(message_y):
-            for x in range(message_x):
-                pixel = state[x][y]
-                if pixel['life_till_set'] is not None:
-                    pixel['life_till_set'] -= delta_time
-                if pixel['life_till_spread'] is not None:
-                    pixel['life_till_spread'] -= delta_time
-                state[x][y] = pixel
-
+        [[(pixel := state[x][y], pixel.__setitem__(1, pixel[1] - delta_time) if pixel[1] is not None else None, pixel.__setitem__(2, pixel[2] - delta_time) if pixel[2] is not None else None) for x in range(message_x)] for y in range(message_y)]
+        
         # animate step
         all_pixels_set = True
         for y in range(message_y):
             for x in range(message_x):
                 pixel = state[x][y]
 
-                if pixel['life_till_set'] is not None:
-                    if pixel['life_till_set'] < 0:
+                if pixel[1] is not None:
+                    if pixel[1] < 0:
                         # infection at final form
-                        pixel['char'] = message_lines[y][x]
+                        pixel[0] = message_lines[y][x]
                     else:
                         all_pixels_set = False
                     
-                    if pixel['life_till_spread'] < 0:
-                        # spread to neighbours
+                    if pixel[2] < 0:
                         random.shuffle(neighbour_displacements)
-                        for displacement in neighbour_displacements:
-                            neighbour_x = clamp(x + displacement[0], 0, message_x - 1)
-                            neighbour_y = clamp(y + displacement[1], 0, message_y - 1)
-                            neighbour = state[neighbour_x][neighbour_y]
-
-                            if (neighbour['life_till_set'] is not None): continue
-
-                            if (random.uniform(0, 1) < (spread_chance_y if displacement[1] != 0 else spread_chance_x)):
-                                neighbour = random_infected_pixel()
-
-                                # update state 
-                                state[neighbour_x][neighbour_y] = neighbour
+                        [(
+                            neighbour_x := clamp(x + displacement[0], 0, message_x - 1),
+                            neighbour_y := clamp(y + displacement[1], 0, message_y - 1),
+                            neighbour := state[neighbour_x][neighbour_y],
+                            state[neighbour_x].__setitem__(neighbour_y, random_infected_pixel()) if (neighbour[1] is None and random.uniform(0, 1) < (spread_chance_y if displacement[1] != 0 else spread_chance_x)) else None
+                            ) for displacement in neighbour_displacements]
 
                 else:
                     all_pixels_set = False
-
-                # update state
                 state[x][y] = pixel
         
-        # convert state to string 
-        state_string = ""
-        for y in range(message_y):
-            for x in range(message_x):
-                state_string += state[x][y]['char']
-            state_string += '\n'
-        state_string[:-1]
+        state_string = "".join(["".join([state[x][y][0] for x in range(message_x)]) + '\n' for y in range(message_y)])
+        print("%s\033[%sA" % (state_string, message_y), end='')
+    print(f"\033[{message_y}B")
 
-        # print state
-        print(state_string, end='')
-        
-        if all_pixels_set:
-            break
-
-        # restore cursor position
-        print(f"\033[{message_y + 1}A")
 
 if __name__ == "__main__":
     message = r"""_____/\\\\\\\\\\_______/\\\____________/\\\\____________/\\\\_____/\\\\\\\\\_____/\\\________/\\\_        
@@ -331,4 +293,4 @@ if __name__ == "__main__":
         ___\/////////_________\///____________\///______________\///__\///________\///________\///________
 """
     magic_number = generate_magic_number(message)
-    animate_string_explosion(decode_magic_number_min(magic_number))
+    animate_string_explosion_min(decode_magic_number(magic_number))
