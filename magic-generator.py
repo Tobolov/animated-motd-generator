@@ -233,6 +233,8 @@ def generate_single_line_string_explosion(message: str) -> str:
     return code
 
 if __name__ == "__main__":
+    # Want your own fancy ascii text? Goto https://www.kammerl.de/ascii/AsciiSignature.php and use the font "s-relief"
+
     message = r"""_____/\\\\\\\\\\_______/\\\____________/\\\\____________/\\\\_____/\\\\\\\\\_____/\\\________/\\\_        
  ___/\\\///////\\\__/\\\\\\\___________\/\\\\\\________/\\\\\\___/\\\\\\\\\\\\\__\///\\\____/\\\/__       
   __\///______/\\\__\/////\\\___________\/\\\//\\\____/\\\//\\\__/\\\/////////\\\___\///\\\/\\\/____      
@@ -243,4 +245,5 @@ if __name__ == "__main__":
        _\///\\\\\\\\\/_______\/\\\___________\/\\\_____________\/\\\_\/\\\_______\/\\\_______\/\\\_______ 
         ___\/////////_________\///____________\///______________\///__\///________\///________\///________
 """
+    # this one liner requires python3.8 and that the terminal supports VT100 escape codes
     print(generate_single_line_string_explosion(message))
