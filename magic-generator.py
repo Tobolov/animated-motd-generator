@@ -117,16 +117,13 @@ def decode_magic_number(number:int):
     return decoded_string
 
 def decode_magic_number_min(number):
-    message_number, config_number = extract_sequence_on_8(number)
-    symbol_lookup_number, x, y, q, r = extract_sequence_on_8(config_number)
-    symbol_lookup_sequence = extract_sequence_on_8(symbol_lookup_number)
-    symbol_lookup = {i:chr(char) for i, char in zip(symbol_lookup_sequence[0::2], symbol_lookup_sequence[1::2])}
-    state = {'mn': message_number, 'd': ""}
+    s = {'d': ""}
+    s['mn'], s['cn'] = extract_sequence_on_8(number)
+    s['sln'], s['x'], s['y'], s['q'], s['r'] = extract_sequence_on_8(s['cn'])
+    s['sls'] = extract_sequence_on_8(s['sln'])
+    s['sl'] = {i:chr(char) for i, char in zip(s['sls'][0::2], s['sls'][1::2])}
 
-    for row in range(y):
-        state.update({'mn':state['mn'] // r})
-        state.update({'d': "".join([symbol_lookup[(state.update({'mn':state['mn'] // q}) or state.get('mn')) % q] for column in range(x)][::-1]) + f"\n{state['d']}"})
-    return state['d'][:-1]
+    return [s.update({'mn':s['mn'] // s['r']}) or s.update({'d': "".join([s['sl'][(s.update({'mn':s['mn'] // s['q']}) or s.get('mn')) % s['q']] for column in range(s['x'])][::-1]) + f"\n{s['d']}"}) for row in range(s['y'])][0:0] or s['d'][:-1]
 
 
 if __name__ == "__main__":
