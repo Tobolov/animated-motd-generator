@@ -252,30 +252,23 @@ def animate_string_explosion_min(message):
         
         # animate step
         all_pixels_set = True
-        for y in range(message_y):
-            for x in range(message_x):
-                pixel = state[x][y]
-
-                if pixel[1] is not None:
-                    if pixel[1] < 0:
-                        # infection at final form
-                        pixel[0] = message_lines[y][x]
-                    else:
-                        all_pixels_set = False
-                    
-                    if pixel[2] < 0:
-                        random.shuffle(neighbour_displacements)
-                        [(
+        [[(
+            pixel := state[x][y],
+            pixel.__setitem__(0, message_lines[y][x]) if (pixel[1] is not None and pixel[1] < 0) else None,
+            all_pixels_set := False if (pixel[1] is not None and pixel[1] >= 0) else None,
+            (
+                random.shuffle(neighbour_displacements),
+                [(
                             neighbour_x := clamp(x + displacement[0], 0, message_x - 1),
                             neighbour_y := clamp(y + displacement[1], 0, message_y - 1),
                             neighbour := state[neighbour_x][neighbour_y],
                             state[neighbour_x].__setitem__(neighbour_y, random_infected_pixel()) if (neighbour[1] is None and random.uniform(0, 1) < (spread_chance_y if displacement[1] != 0 else spread_chance_x)) else None
                             ) for displacement in neighbour_displacements]
+            ) if (pixel[1] is not None and pixel[2] < 0) else None,
+            all_pixels_set := False if pixel[1] is None else None,
+            state[x].__setitem__(y, pixel)
+        ) for x in range(message_x)] for y in range(message_y)]
 
-                else:
-                    all_pixels_set = False
-                state[x][y] = pixel
-        
         state_string = "".join(["".join([state[x][y][0] for x in range(message_x)]) + '\n' for y in range(message_y)])
         print("%s\033[%sA" % (state_string, message_y), end='')
     print(f"\033[{message_y}B")
