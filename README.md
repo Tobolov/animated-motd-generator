@@ -1,0 +1,1 @@
+For a nice font, goto https://www.kammerl.de/ascii/AsciiSignature.php and use s-relief
