@@ -121,14 +121,12 @@ def decode_magic_number_min(number):
     symbol_lookup_number, x, y, q, r = extract_sequence_on_8(config_number)
     symbol_lookup_sequence = extract_sequence_on_8(symbol_lookup_number)
     symbol_lookup = {i:chr(char) for i, char in zip(symbol_lookup_sequence[0::2], symbol_lookup_sequence[1::2])}
+    state = {'mn': message_number, 'd': ""}
 
-    teardown = (lambda s:lambda t, n:s(s,t,n))(lambda s, t, n: t if n == 0 else s(s, t // q, n-1))
-    
     decoded_string = ""
     for row in range(y):
-        message_number //= r
-        line = "".join([symbol_lookup[int(teardown(message_number, column + 1) % q)] for column in range(x)][::-1])
-        message_number = teardown(message_number, x)
+        state.update({'mn':state['mn'] // r})
+        line = "".join([symbol_lookup[(state.update({'mn':state['mn'] // q}) or state.get('mn')) % q] for column in range(x)][::-1])
         decoded_string = line + "\n" + decoded_string
     return decoded_string[:-1]
 
