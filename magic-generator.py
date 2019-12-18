@@ -218,34 +218,34 @@ def animate_string_explosion(message: str) -> None:
 
 
 
-animate_string_explosion_min = lambda message, time_scale, debis, life_till_set_min, life_till_set_max, life_till_spread_min, life_till_spread_max, spread_chance_x, spread_chance_y: (
-    lambda globe: (
-        message_lines := message.splitlines(),
-        message_y := len(message_lines),
-        message_x := max([len(line) for line in message_lines]),
-        state := [[[' ', None, None] for y in range(message_y)] for x in range(message_x)],
-        state[random.randrange(message_x // 2 - message_x // 4, message_x // 2 + message_x // 4)].__setitem__(random.randrange(message_y // 2 - message_y // 4, message_y // 2 + message_y // 4), globe['random_infected_pixel']()),
-        (lambda func: func(func))(
-            lambda func: None if globe['all_pixels_set'] else (
-                current_time := time.time(),
-                delta_time := (current_time - globe['last_time']) * time_scale,
-                globe.__setitem__('last_time', current_time),
-                [[(pixel := state[x][y], pixel.__setitem__(1, pixel[1] - delta_time) if pixel[1] is not None else None, pixel.__setitem__(2, pixel[2] - delta_time) if pixel[2] is not None else None) for x in range(message_x)] for y in range(message_y)],
-                globe.__setitem__('all_pixels_set', True),
-                [[(pixel := state[x][y], pixel.__setitem__(0, message_lines[y][x]) if (pixel[1] is not None and pixel[1] < 0) else None, globe.__setitem__('all_pixels_set', False) if (pixel[1] is not None and pixel[1] >= 0) else None, (random.shuffle(globe['neighbour_displacements']), [(neighbour_x := globe['clamp'](x + displacement[0], 0, message_x - 1), neighbour_y := globe['clamp'](y + displacement[1], 0, message_y - 1), neighbour := state[neighbour_x][neighbour_y], state[neighbour_x].__setitem__(neighbour_y, globe['random_infected_pixel']()) if (neighbour[1] is None and random.uniform(0, 1) < (spread_chance_y if displacement[1] != 0 else spread_chance_x)) else None) for displacement in globe['neighbour_displacements']]) if (pixel[1] is not None and pixel[2] < 0) else None, globe.__setitem__('all_pixels_set', False) if pixel[1] is None else None, state[x].__setitem__(y, pixel)) for x in range(message_x)] for y in range(message_y)],
-                state_string := "".join(["".join([state[x][y][0] for x in range(message_x)]) + '\n' for y in range(message_y)]),
-                print("%s\033[%sA" % (state_string, message_y), end=''),
-                func(func)
+animate_string_explosion_min = lambda a, b, c, d, e, f, g, h, i: (
+    lambda j: (
+        k := a.splitlines(),
+        l := len(k),
+        m := max([len(n) for n in k]),
+        o := [[[' ', None, None] for y in range(l)] for x in range(m)],
+        o[random.randrange(m // 2 - m // 4, m // 2 + m // 4)].__setitem__(random.randrange(l // 2 - l // 4, l // 2 + l // 4), j['r']()),
+        (lambda p: p(p))(
+            lambda p: None if j['q'] else (
+                v := time.time(),
+                w := (v - j['u']) * b,
+                j.__setitem__('u', v),
+                [[(z := o[x][y], z.__setitem__(1, z[1] - w) if z[1] is not None else None, z.__setitem__(2, z[2] - w) if z[2] is not None else None) for x in range(m)] for y in range(l)],
+                j.__setitem__('q', True),
+                [[(z := o[x][y], z.__setitem__(0, k[y][x]) if (z[1] is not None and z[1] < 0) else None, j.__setitem__('q', False) if (z[1] is not None and z[1] >= 0) else None, (random.shuffle(j['s']), [(ab := j['t'](x + ac[0], 0, m - 1), ad := j['t'](y + ac[1], 0, l - 1), ae := o[ab][ad], o[ab].__setitem__(ad, j['r']()) if (ae[1] is None and random.uniform(0, 1) < (i if ac[1] != 0 else h)) else None) for ac in j['s']]) if (z[1] is not None and z[2] < 0) else None, j.__setitem__('q', False) if z[1] is None else None, o[x].__setitem__(y, z)) for x in range(m)] for y in range(l)],
+                aa := "".join(["".join([o[x][y][0] for x in range(m)]) + '\n' for y in range(l)]),
+                print("%s\033[%sA" % (aa, l), end=''),
+                p(p)
             )
         ),
-        print(f"\033[{message_y}B")
+        print(f"\033[{l}B")
     )
     )({
-        'random_infected_pixel': lambda: [random.choice(debis), random.uniform(life_till_set_min, life_till_set_max), random.uniform(life_till_spread_min, life_till_spread_max)],
-        'neighbour_displacements' : [[0, 1], [0, -1], [1, 0], [-1, 0]],
-        'clamp' : lambda n, smallest, largest: max(smallest, min(n, largest)),
-        'all_pixels_set': False,
-        'last_time': time.time()
+        'r': lambda: [random.choice(c), random.uniform(d, e), random.uniform(f, g)],
+        's' : [[0, 1], [0, -1], [1, 0], [-1, 0]],
+        't' : lambda n, x, y: max(x, min(n, y)),
+        'q': False,
+        'u': time.time()
     })
 
 def animate_string_explosion_min_wrapper(message, time_scale=100, debis="*#", life_till_set_min=2, life_till_set_max=15, life_till_spread_min=0.2, life_till_spread_max=1, spread_chance_x=0.9, spread_chance_y=0.01):
