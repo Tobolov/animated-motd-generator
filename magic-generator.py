@@ -229,7 +229,7 @@ def generate_single_line_string_explosion(message: str) -> str:
     arguments = "{extracted_magic_number}, 100, '*#', 2, 15, 0.2, 1, 0.9, 0.01".format(
         extracted_magic_number=f"({decode_magic_number_min_string})({generate_magic_number(message)})"
         )
-    code = f"({animate_string_explosion_min_string})({arguments})"
+    code = f"({animate_string_explosion_min_string})({arguments})[0:0]"
     return code
 
 if __name__ == "__main__":
