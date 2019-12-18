@@ -217,51 +217,39 @@ def animate_string_explosion(message: str) -> None:
         print(f"\033[{message_y + 1}A")
 
 
-def animate_string_explosion_min(message):
-    # variables
-    time_scale = 100
-    debis = "*#"
-    life_till_set_min = 2
-    life_till_set_max = 15
-    life_till_spread_min = 0.2
-    life_till_spread_max = 1
-    spread_chance_x = 0.9
-    spread_chance_y = 0.01
 
-    globe = {
+animate_string_explosion_min = lambda message, time_scale, debis, life_till_set_min, life_till_set_max, life_till_spread_min, life_till_spread_max, spread_chance_x, spread_chance_y: (
+    lambda globe: (
+        message_lines := message.splitlines(),
+        message_y := len(message_lines),
+        message_x := max([len(line) for line in message_lines]),
+        state := [[[' ', None, None] for y in range(message_y)] for x in range(message_x)],
+        state[random.randrange(message_x // 2 - message_x // 4, message_x // 2 + message_x // 4)].__setitem__(random.randrange(message_y // 2 - message_y // 4, message_y // 2 + message_y // 4), globe['random_infected_pixel']()),
+        (lambda func: func(func))(
+            lambda func: None if globe['all_pixels_set'] else (
+                current_time := time.time(),
+                delta_time := (current_time - globe['last_time']) * time_scale,
+                globe.__setitem__('last_time', current_time),
+                [[(pixel := state[x][y], pixel.__setitem__(1, pixel[1] - delta_time) if pixel[1] is not None else None, pixel.__setitem__(2, pixel[2] - delta_time) if pixel[2] is not None else None) for x in range(message_x)] for y in range(message_y)],
+                globe.__setitem__('all_pixels_set', True),
+                [[(pixel := state[x][y], pixel.__setitem__(0, message_lines[y][x]) if (pixel[1] is not None and pixel[1] < 0) else None, globe.__setitem__('all_pixels_set', False) if (pixel[1] is not None and pixel[1] >= 0) else None, (random.shuffle(globe['neighbour_displacements']), [(neighbour_x := globe['clamp'](x + displacement[0], 0, message_x - 1), neighbour_y := globe['clamp'](y + displacement[1], 0, message_y - 1), neighbour := state[neighbour_x][neighbour_y], state[neighbour_x].__setitem__(neighbour_y, globe['random_infected_pixel']()) if (neighbour[1] is None and random.uniform(0, 1) < (spread_chance_y if displacement[1] != 0 else spread_chance_x)) else None) for displacement in globe['neighbour_displacements']]) if (pixel[1] is not None and pixel[2] < 0) else None, globe.__setitem__('all_pixels_set', False) if pixel[1] is None else None, state[x].__setitem__(y, pixel)) for x in range(message_x)] for y in range(message_y)],
+                state_string := "".join(["".join([state[x][y][0] for x in range(message_x)]) + '\n' for y in range(message_y)]),
+                print("%s\033[%sA" % (state_string, message_y), end=''),
+                func(func)
+            )
+        ),
+        print(f"\033[{message_y}B")
+    )
+    )({
         'random_infected_pixel': lambda: [random.choice(debis), random.uniform(life_till_set_min, life_till_set_max), random.uniform(life_till_spread_min, life_till_spread_max)],
         'neighbour_displacements' : [[0, 1], [0, -1], [1, 0], [-1, 0]],
         'clamp' : lambda n, smallest, largest: max(smallest, min(n, largest)),
         'all_pixels_set': False,
         'last_time': time.time()
-    }
+    })
 
-    random_infected_pixel = lambda: [random.choice(debis), random.uniform(life_till_set_min, life_till_set_max), random.uniform(life_till_spread_min, life_till_spread_max)]
-    neighbour_displacements = [[0, 1], [0, -1], [1, 0], [-1, 0]]
-    clamp = lambda n, smallest, largest: max(smallest, min(n, largest))
-
-    message_lines = message.splitlines()
-    message_y = len(message_lines)
-    message_x = max([len(line) for line in message_lines])
-    state = [[[' ', None, None] for y in range(message_y)] for x in range(message_x)]
-    state[random.randrange(message_x // 2 - message_x // 4, message_x // 2 + message_x // 4)][random.randrange(message_y // 2 - message_y // 4, message_y // 2 + message_y // 4)] = random_infected_pixel()
-
-
-    (lambda func: func(func))(
-        lambda func: None if globe['all_pixels_set'] else (
-            current_time := time.time(),
-            delta_time := (current_time - globe['last_time']) * time_scale,
-            globe.__setitem__('last_time', current_time),
-            [[(pixel := state[x][y], pixel.__setitem__(1, pixel[1] - delta_time) if pixel[1] is not None else None, pixel.__setitem__(2, pixel[2] - delta_time) if pixel[2] is not None else None) for x in range(message_x)] for y in range(message_y)],
-            globe.__setitem__('all_pixels_set', True),
-            [[(pixel := state[x][y], pixel.__setitem__(0, message_lines[y][x]) if (pixel[1] is not None and pixel[1] < 0) else None, globe.__setitem__('all_pixels_set', False) if (pixel[1] is not None and pixel[1] >= 0) else None, (random.shuffle(neighbour_displacements), [(neighbour_x := clamp(x + displacement[0], 0, message_x - 1), neighbour_y := clamp(y + displacement[1], 0, message_y - 1), neighbour := state[neighbour_x][neighbour_y], state[neighbour_x].__setitem__(neighbour_y, random_infected_pixel()) if (neighbour[1] is None and random.uniform(0, 1) < (spread_chance_y if displacement[1] != 0 else spread_chance_x)) else None) for displacement in neighbour_displacements]) if (pixel[1] is not None and pixel[2] < 0) else None, globe.__setitem__('all_pixels_set', False) if pixel[1] is None else None, state[x].__setitem__(y, pixel)) for x in range(message_x)] for y in range(message_y)],
-            state_string := "".join(["".join([state[x][y][0] for x in range(message_x)]) + '\n' for y in range(message_y)]),
-            print("%s\033[%sA" % (state_string, message_y), end=''),
-            func(func)
-        )
-    )
-    print(f"\033[{message_y}B")
-
+def animate_string_explosion_min_wrapper(message, time_scale=100, debis="*#", life_till_set_min=2, life_till_set_max=15, life_till_spread_min=0.2, life_till_spread_max=1, spread_chance_x=0.9, spread_chance_y=0.01):
+    animate_string_explosion_min(message, time_scale, debis, life_till_set_min, life_till_set_max, life_till_spread_min, life_till_spread_max, spread_chance_x, spread_chance_y)
 
 if __name__ == "__main__":
     message = r"""_____/\\\\\\\\\\_______/\\\____________/\\\\____________/\\\\_____/\\\\\\\\\_____/\\\________/\\\_        
@@ -275,4 +263,4 @@ if __name__ == "__main__":
         ___\/////////_________\///____________\///______________\///__\///________\///________\///________
 """
     magic_number = generate_magic_number(message)
-    animate_string_explosion_min(decode_magic_number(magic_number))
+    animate_string_explosion_min_wrapper(decode_magic_number(magic_number))
