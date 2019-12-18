@@ -123,12 +123,10 @@ def decode_magic_number_min(number):
     symbol_lookup = {i:chr(char) for i, char in zip(symbol_lookup_sequence[0::2], symbol_lookup_sequence[1::2])}
     state = {'mn': message_number, 'd': ""}
 
-    decoded_string = ""
     for row in range(y):
         state.update({'mn':state['mn'] // r})
-        line = "".join([symbol_lookup[(state.update({'mn':state['mn'] // q}) or state.get('mn')) % q] for column in range(x)][::-1])
-        decoded_string = line + "\n" + decoded_string
-    return decoded_string[:-1]
+        state.update({'d': "".join([symbol_lookup[(state.update({'mn':state['mn'] // q}) or state.get('mn')) % q] for column in range(x)][::-1]) + f"\n{state['d']}"})
+    return state['d'][:-1]
 
 
 if __name__ == "__main__":
